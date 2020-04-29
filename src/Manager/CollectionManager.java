@@ -280,7 +280,6 @@ public class CollectionManager {
 
     /**
      * Метод обеспечивает выполнение команды add в execute скрипте
-     *
      * @param strName
      * @param strX
      * @param strY

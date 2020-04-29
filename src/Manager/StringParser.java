@@ -2,11 +2,17 @@ package Manager;
 
 import java.util.Scanner;
 
+/**
+ * Класс, содержащий методы для парсинга вводимых значений с консоли в String, Integer и Double, используемые в команде add
+ */
 public class StringParser {
 
     Scanner scan = new Scanner(System.in);
     static String s;
 
+    /*
+    * Метод для инициализации полей типа String
+     */
     public String strParse(String a){
         do {
             System.out.println("Введите значение поля " + a + "");
@@ -18,6 +24,9 @@ public class StringParser {
         return s;
     }
 
+    /*
+     * Метод для инициализации полей типа Integer
+     */
     public Integer intParse(String a){
         Integer i = null;
      do {
@@ -36,6 +45,9 @@ public class StringParser {
      return i;
     }
 
+    /*
+     * Метод для инициализации полей типа Double
+     */
     public Double dblParse(String a){
         Double d = null;
         do {

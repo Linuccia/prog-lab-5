@@ -1,7 +1,7 @@
 package DataClasses;
 
 public class Coordinates {
-    private int x; //Максимальное значение поля: 857
+    private int x; //Поле не может быть null, Максимальное значение поля: 857
     private Double y; //Поле не может быть null
 
     public Coordinates(int x, Double y){

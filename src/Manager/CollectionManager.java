@@ -9,6 +9,9 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
 
+/*
+ * Класс, реализующий выполнение команд и управление коллекцией
+ */
 public class CollectionManager {
 
     private PriorityQueue<Product> collection;
@@ -24,11 +27,17 @@ public class CollectionManager {
         collection = new PriorityQueue<>();
     }
 
+    /*
+     * Метод загружает коллекцию из файла
+     */
     public CollectionManager(File file) throws IOException {
         this.load(file);
         this.initDate = new Date();
     }
 
+    /*
+     * Метод выводит список доступных команд
+     */
     public void help(){
         System.out.println("help : вывести справку по доступным командам");
         System.out.println("info : вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации, количество элементов и т.д.)");
@@ -48,6 +57,9 @@ public class CollectionManager {
         System.out.println("count_less_than_price price : вывести количество элементов, значение поля price которых меньше заданного");
     }
 
+    /*
+     * Метод выводит информацию о коллекции
+     */
     public void info() {
         System.out.println("Тип коллекции: PriorityQueue");
         System.out.println("Размер коллекции: " + collection.size());
@@ -55,6 +67,9 @@ public class CollectionManager {
 
     }
 
+    /*
+     * Метод все элементы коллекции
+     */
     public void show() {
         if (collection.size() != 0) {
             collection.forEach(p -> System.out.println(json.toJson(p)));
@@ -63,6 +78,9 @@ public class CollectionManager {
         }
     }
 
+    /*
+     * Метод добавляет элемент в коллекцию
+     */
     public void add() {
         Scanner scanner = new Scanner(System.in);
         Product product;
@@ -73,15 +91,17 @@ public class CollectionManager {
 
         String name = pars.strParse("название продукта");
 
+        String strX;
         int x = 858;
         do {
             try {
                 System.out.println("Введите значение поля координата x (значение должно быть меньше или равно 857)");
-                x = scanner.nextInt();
+                strX = scanner.nextLine().trim();
+                x = Integer.parseInt(strX);
                 if (x >= 858) {
                     System.out.println("Значение не может быть больше 857. Повторите ввод");
                 }
-            } catch (InputMismatchException e) {
+            } catch (NumberFormatException e) {
                 System.out.println("Введенное значение не является целым числом или выходит за пределы int. Повторите ввод");
             }
         } while (x >= 858);
@@ -189,6 +209,9 @@ public class CollectionManager {
         }
     }
 
+    /*
+     * Метод обновляет элемент коллекции с указанным id
+     */
     public void update(String strId) {
         try {
             sign = true;
@@ -208,6 +231,9 @@ public class CollectionManager {
         }
     }
 
+    /*
+     * Метод удаляет элемент коллекции с указанным id
+     */
     public void remove_by_id(String strId) {
         try {
             if (!(collection.size() == 0)) {
@@ -223,11 +249,17 @@ public class CollectionManager {
         }
     }
 
+    /*
+     * Метод очищает коллекцию
+     */
     public void clear() {
         collection.clear();
         System.out.println("Коллекция очищена");
     }
 
+    /*
+     * Метод сохраняет коллекцию в файл
+     */
     public void save() throws IOException {
         File outfile = new File("JSON.json");
         BufferedWriter writter = new BufferedWriter(new FileWriter(outfile));
@@ -237,6 +269,9 @@ public class CollectionManager {
         System.out.println("Коллекция сохранена");
     }
 
+    /*
+     * Метод обеспечивает выполнение команды add в execute скрипте
+     */
     public void add(String strName, String strX, String strY, String strPrice, String strPartNumber, String strManufactureCost,
                     String strUnitOfMeasure, String strOwnerName, String strWeight, String strEyeColor, String strNationality) {
         Product product;
@@ -380,6 +415,9 @@ public class CollectionManager {
         System.out.println("Элемент коллекции добавлен");
     }
 
+    /*
+     * Метод обеспечивает выполнение команд из скрипта
+     */
     public void execute_script(String strFile) throws IOException {
         String strCommand = "";
         String[] commands;
@@ -468,12 +506,17 @@ public class CollectionManager {
         }
     }
 
-
+    /*
+     * Метод удаляет первый элемент коллекции
+     */
     public void remove_first(){
         collection.remove();
         System.out.println("Первый элемент коллекции удален");
     }
 
+    /*
+     * Метод добавляет элемент в коллекцию, если значение поля price меньше минимального значения среди всех элементов
+     */
     public void add_if_min() {
         if (!(collection.size() == 0)) {
             Integer minPrice = 32767;
@@ -498,6 +541,9 @@ public class CollectionManager {
         }
     }
 
+    /*
+     * Метод удаляет элементы коллекции, если значение их поля price блольше указанного
+     */
     public void remove_greater(String strEl){
         try {
             if (!(collection.size() == 0)) {
@@ -521,6 +567,9 @@ public class CollectionManager {
         }
     }
 
+    /*
+     * Метод выводит среднее значение поля price элементов коллекции
+     */
     public void average_of_price(){
         double averagePrice = 0.0;
         if (!(collection.size() == 0)) {
@@ -534,6 +583,9 @@ public class CollectionManager {
         }
     }
 
+    /*
+     * Метод считает элементы коллекции, значение поля owner которых совпадает с введенным
+     */
     public void count_by_owner(String strName, String strWeight, String strEyeColor, String strNationality) {
 
         String personName;
@@ -619,6 +671,9 @@ public class CollectionManager {
         }
     }
 
+    /*
+     * Метод считает элементы коллекции, значение поля price которых меньше введенного
+     */
     public void count_less_than_price(String strPrice){
         int count = 0;
         if (!(collection.size() == 0)) {
@@ -638,6 +693,9 @@ public class CollectionManager {
         }
     }
 
+    /*
+     * Метод обеспечивает загрузку и парсинг файла
+     */
     public void load(File file) throws IOException {
         try {
             if (!file.exists()) throw new FileNotFoundException();

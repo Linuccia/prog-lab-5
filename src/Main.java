@@ -10,7 +10,7 @@ public class Main {
         try {
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 public void run() {
-                    System.out.println("\nКоллекция не сохранена");
+                    System.out.println("\nВыход из программы...");
                 }
             });
             Commander commander = new Commander(new CollectionManager(new File("JSON.json")));

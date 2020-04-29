@@ -17,5 +17,12 @@ public class Person {
     public Double getWeight(){return weight;}
     public Color getEyeColor(){return eyeColor;}
     public Country getNationality(){return nationality;}
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        Person p = (Person) o;
+        if (o == null || getClass() != o.getClass()) return false;
+        return this.name.equals(p.getName()) && this.weight.equals(p.getWeight()) && this.eyeColor.equals(p.getEyeColor()) && this.nationality.equals(p.getNationality());
+    }
 }

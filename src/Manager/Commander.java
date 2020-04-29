@@ -3,7 +3,7 @@ package Manager;
 import java.io.IOException;
 import java.util.Scanner;
 
-/*
+/**
  * Класс, управляющий выполнением команд
  */
 public class Commander {

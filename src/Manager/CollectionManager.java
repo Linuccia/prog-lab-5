@@ -9,7 +9,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
 
-/*
+/**
  * Класс, реализующий выполнение команд и управление коллекцией
  */
 public class CollectionManager {
@@ -27,15 +27,18 @@ public class CollectionManager {
         collection = new PriorityQueue<>();
     }
 
-    /*
+    /**
      * Метод загружает коллекцию из файла
+     *
+     * @param file
+     * @throws IOException
      */
     public CollectionManager(File file) throws IOException {
         this.load(file);
         this.initDate = new Date();
     }
 
-    /*
+    /**
      * Метод выводит список доступных команд
      */
     public void help(){
@@ -67,7 +70,7 @@ public class CollectionManager {
 
     }
 
-    /*
+    /**
      * Метод все элементы коллекции
      */
     public void show() {
@@ -78,7 +81,7 @@ public class CollectionManager {
         }
     }
 
-    /*
+    /**
      * Метод добавляет элемент в коллекцию
      */
     public void add() {
@@ -209,8 +212,10 @@ public class CollectionManager {
         }
     }
 
-    /*
+    /**
      * Метод обновляет элемент коллекции с указанным id
+     *
+     * @param strId
      */
     public void update(String strId) {
         try {
@@ -231,8 +236,10 @@ public class CollectionManager {
         }
     }
 
-    /*
+    /**
      * Метод удаляет элемент коллекции с указанным id
+     *
+     * @param strId
      */
     public void remove_by_id(String strId) {
         try {
@@ -249,7 +256,7 @@ public class CollectionManager {
         }
     }
 
-    /*
+    /**
      * Метод очищает коллекцию
      */
     public void clear() {
@@ -257,11 +264,13 @@ public class CollectionManager {
         System.out.println("Коллекция очищена");
     }
 
-    /*
+    /**
      * Метод сохраняет коллекцию в файл
+     *
+     * @throws IOException
      */
     public void save() throws IOException {
-        File outfile = new File("JSON.json");
+        File outfile = new File(System.getenv("JsonFile"));
         BufferedWriter writter = new BufferedWriter(new FileWriter(outfile));
         String outJson = json.toJson(collection);
         writter.write(outJson);
@@ -269,8 +278,20 @@ public class CollectionManager {
         System.out.println("Коллекция сохранена");
     }
 
-    /*
+    /**
      * Метод обеспечивает выполнение команды add в execute скрипте
+     *
+     * @param strName
+     * @param strX
+     * @param strY
+     * @param strPrice
+     * @param strPartNumber
+     * @param strManufactureCost
+     * @param strUnitOfMeasure
+     * @param strOwnerName
+     * @param strWeight
+     * @param strEyeColor
+     * @param strNationality
      */
     public void add(String strName, String strX, String strY, String strPrice, String strPartNumber, String strManufactureCost,
                     String strUnitOfMeasure, String strOwnerName, String strWeight, String strEyeColor, String strNationality) {
@@ -415,8 +436,11 @@ public class CollectionManager {
         System.out.println("Элемент коллекции добавлен");
     }
 
-    /*
+    /**
      * Метод обеспечивает выполнение команд из скрипта
+     *
+     * @param strFile
+     * @throws IOException
      */
     public void execute_script(String strFile) throws IOException {
         String strCommand = "";
@@ -506,7 +530,7 @@ public class CollectionManager {
         }
     }
 
-    /*
+    /**
      * Метод удаляет первый элемент коллекции
      */
     public void remove_first(){
@@ -514,7 +538,7 @@ public class CollectionManager {
         System.out.println("Первый элемент коллекции удален");
     }
 
-    /*
+    /**
      * Метод добавляет элемент в коллекцию, если значение поля price меньше минимального значения среди всех элементов
      */
     public void add_if_min() {
@@ -541,8 +565,10 @@ public class CollectionManager {
         }
     }
 
-    /*
+    /**
      * Метод удаляет элементы коллекции, если значение их поля price блольше указанного
+     *
+     * @param strEl
      */
     public void remove_greater(String strEl){
         try {
@@ -567,7 +593,7 @@ public class CollectionManager {
         }
     }
 
-    /*
+    /**
      * Метод выводит среднее значение поля price элементов коллекции
      */
     public void average_of_price(){
@@ -583,8 +609,13 @@ public class CollectionManager {
         }
     }
 
-    /*
+    /**
      * Метод считает элементы коллекции, значение поля owner которых совпадает с введенным
+     *
+     * @param strName
+     * @param strWeight
+     * @param strEyeColor
+     * @param strNationality
      */
     public void count_by_owner(String strName, String strWeight, String strEyeColor, String strNationality) {
 
@@ -610,50 +641,25 @@ public class CollectionManager {
         }
 
         Color eyeColor;
-        switch (strEyeColor.toUpperCase()) {
-            case "GREEN":
-                eyeColor = Color.GREEN;
-                break;
-            case "RED":
-                eyeColor = Color.RED;
-                break;
-            case "BLUE":
-                eyeColor = Color.BLUE;
-                break;
-            case "BROWN":
-                eyeColor = Color.BROWN;
-                break;
-            case "":
-                System.out.println("Цвет глаз не может быть null");
-                return;
-            default:
-                System.out.println("Введенного цвета глаз не существует");
-                return;
+        try {
+            eyeColor = Color.valueOf(strEyeColor.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            System.out.println("Введенного цвета не существует");
+            return;
+        } catch (NullPointerException e) {
+            System.out.println("Цвет не может быть null");
+            return;
         }
 
         Country nationality;
-        switch (strNationality.toUpperCase()) {
-            case "UNITED_KINGDOM":
-                nationality = Country.UNITED_KINGDOM;
-                break;
-            case "CHINA":
-                nationality = Country.CHINA;
-                break;
-            case "VATICAN":
-                nationality = Country.VATICAN;
-                break;
-            case "THAILAND":
-                nationality = Country.THAILAND;
-                break;
-            case "JAPAN":
-                nationality = Country.JAPAN;
-                break;
-            case "":
-                System.out.println("Национальность не может быть null. Элемент не добавлен в коллекцию");
-                return;
-            default:
-                System.out.println("Введенной страны не существует. Элемент не добавлен в коллекцию");
-                return;
+        try {
+            nationality = Country.valueOf(strNationality.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            System.out.println("Введенной страны не существует");
+            return;
+        } catch (NullPointerException e) {
+            System.out.println("Страна не может быть null");
+            return;
         }
 
         Person ownerEq = new Person(personName, weight, eyeColor, nationality);
@@ -665,14 +671,16 @@ public class CollectionManager {
                     count++;
                 }
             }
-            System.out.println("Найдено " + count + "элемент(а/ов), значение поля owner которых совпадает с введенным");
+            System.out.println("Найдено " + count + " элемент(а/ов), значение поля owner которых совпадает с введенным");
         } else {
             System.out.println("Коллекция пуста");
         }
     }
 
-    /*
+    /**
      * Метод считает элементы коллекции, значение поля price которых меньше введенного
+     *
+     * @param strPrice
      */
     public void count_less_than_price(String strPrice){
         int count = 0;
@@ -684,7 +692,7 @@ public class CollectionManager {
                         count ++;
                     }
                 }
-                System.out.println("Найдено " + count + "элемент(а/ов), значение цены котор(ых/ого) меньше " + price);
+                System.out.println("Найдено " + count + " элемент(а/ов), значение цены котор(ых/ого) меньше " + price);
             } catch (NumberFormatException e) {
                 System.out.println("Введенное значение не является или выходит за пределы int. Повторите ввод");
             }
@@ -693,8 +701,11 @@ public class CollectionManager {
         }
     }
 
-    /*
+    /**
      * Метод обеспечивает загрузку и парсинг файла
+     *
+     * @param file
+     * @throws IOException
      */
     public void load(File file) throws IOException {
         try {

@@ -10,8 +10,11 @@ public class StringParser {
     Scanner scan = new Scanner(System.in);
     static String s;
 
-    /*
-    * Метод для инициализации полей типа String
+    /**
+     * Метод для инициализации полей типа String
+     *
+     * @param a
+     * @return
      */
     public String strParse(String a){
         do {
@@ -24,8 +27,11 @@ public class StringParser {
         return s;
     }
 
-    /*
+    /**
      * Метод для инициализации полей типа Integer
+     *
+     * @param a
+     * @return
      */
     public Integer intParse(String a){
         Integer i = null;
@@ -45,8 +51,11 @@ public class StringParser {
      return i;
     }
 
-    /*
+    /**
      * Метод для инициализации полей типа Double
+     *
+     * @param a
+     * @return
      */
     public Double dblParse(String a){
         Double d = null;

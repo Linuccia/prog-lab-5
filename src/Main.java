@@ -16,7 +16,7 @@ public class Main {
                     System.out.println("\nВыход из программы...");
                 }
             });
-            Commander commander = new Commander(new CollectionManager(new File("Products.json")));
+            Commander commander = new Commander(new CollectionManager(new File(System.getenv("ProductsFile"))));
             commander.interactiveMod();
         }catch (NoSuchElementException e){
             System.out.println("Выход из программы...");

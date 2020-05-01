@@ -272,7 +272,7 @@ public class CollectionManager {
      * @throws IOException
      */
     public void save() throws IOException {
-        File outfile = new File("Products.json");
+        File outfile = new File(System.getenv("ProductsFile"));
         BufferedWriter writter = new BufferedWriter(new FileWriter(outfile));
         String outJson = json.toJson(collection);
         writter.write(outJson);

@@ -11,7 +11,7 @@ public class Product implements Comparable<Product> {
     private String partNumber; //Длина строки не должна быть больше 85, Длина строки должна быть не меньше 15, Строка не может быть пустой, Поле не может быть null
     private Long manufactureCost; //Поле не может быть null
     private UnitOfMeasure unitOfMeasure; //Поле не может быть null
-    private Person owner; //Поле может быть null
+    private Person owner; //Поле не может быть null
 
     public Product(Integer id, String name, Coordinates coordinates, Integer price, String partNumber, Long manufactureCost, UnitOfMeasure unitOfMeasure, Person owner){
         this.id = id;
@@ -24,6 +24,7 @@ public class Product implements Comparable<Product> {
         this.unitOfMeasure = unitOfMeasure;
         this.owner = owner;
     }
+
     public Integer getId(){return  id;}
     public String getName(){return  name;}
     public Coordinates getCoordinates(){return  coordinates;}

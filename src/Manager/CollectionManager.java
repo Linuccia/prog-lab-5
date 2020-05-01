@@ -36,6 +36,13 @@ public class CollectionManager {
     public CollectionManager(File file) throws IOException {
         this.load(file);
         this.initDate = new Date();
+        if (!(collection.size() == 0)) {
+            for (Product p: collection) {
+                if (p.getId() > maxId) {
+                    maxId = p.getId();
+                }
+            }
+        }
     }
 
     /**
@@ -161,6 +168,7 @@ public class CollectionManager {
         String personName = pars.strParse("имя владельца");
 
         Double weight;
+
         do {
             weight = pars.dblParse("вес");
         } while (weight <= 0);
@@ -191,25 +199,18 @@ public class CollectionManager {
             }
         } while (nationality == null);
 
-        Integer id;
-        if (!(collection.size() == 0)) {
-            for (Product p: collection) {
-                if (p.getId() > maxId) {
-                    maxId = p.getId();
-                }
-            }
-        }
-        id = maxId+1;
+        Integer id = maxId+1;
+        maxId = id;
 
         if (sign) {
-            product = new Product(idEq, name, new Coordinates(x, y), price, partNumber, manufactureCost, unitOfMeasure, new Person(personName, weight, eyeColor, nationality));
-            collection.add(product);
-            System.out.println("Элемент коллекции обновлен");
-        } else {
-            product = new Product(id, name, new Coordinates(x, y), price, partNumber, manufactureCost, unitOfMeasure, new Person(personName, weight, eyeColor, nationality));
-            collection.add(product);
-            System.out.println("Элемент добавлен в коллекцию");
-        }
+                product = new Product(idEq, name, new Coordinates(x, y), price, partNumber, manufactureCost, unitOfMeasure, new Person(personName, weight, eyeColor, nationality));
+            } else {
+                product = new Product(id, name, new Coordinates(x, y), price, partNumber, manufactureCost, unitOfMeasure, new Person(personName, weight, eyeColor, nationality));
+            }
+
+        collection.add(product);
+        System.out.println("Элемент коллекции обновлен");
+
     }
 
     /**
@@ -231,6 +232,7 @@ public class CollectionManager {
             } else {
                 System.out.println("Коллекция пуста");
             }
+            sign = false;
         } catch (NumberFormatException e) {
             System.out.println("Введенное значение не является или выходит за пределы int. Повторите ввод");
         }
@@ -270,7 +272,7 @@ public class CollectionManager {
      * @throws IOException
      */
     public void save() throws IOException {
-        File outfile = new File(System.getenv("JsonFile"));
+        File outfile = new File("Products.json");
         BufferedWriter writter = new BufferedWriter(new FileWriter(outfile));
         String outJson = json.toJson(collection);
         writter.write(outJson);
@@ -418,15 +420,8 @@ public class CollectionManager {
             return;
         }
 
-        Integer id;
-        if (!(collection.size() == 0)) {
-            for (Product p: collection) {
-                if (p.getId() > maxId) {
-                    maxId = p.getId();
-                }
-            }
-        }
-        id = maxId+1;
+        Integer id = maxId+1;
+        maxId = id;
 
 
         product = new Product(id, name, new Coordinates(x, y), price, partNumber, manufactureCost, unitOfMeasure,
@@ -464,7 +459,7 @@ public class CollectionManager {
                                 show();
                                 break;
                             case "add":
-                                String[] strParameters = new String[12];
+                                String[] strParameters = new String[11];
                                 for (int i = 0; i < strParameters.length; i++) {
                                     strCommand = scan.nextLine();
                                     strParameters[i] = strCommand;
@@ -481,14 +476,20 @@ public class CollectionManager {
                                 clear();
                                 break;
                             case "save":
-                                save();
+                                try {
+                                    save();
+                                } catch (Exception e) {
+                                    System.out.println("Отсуствуют права для записи в файл");
+                                }
                                 break;
                             case "execute_script":
                                 ex++;
-                                if (ex == 1) {
+                                if (ex == 2) {
+                                    ex = 0;
+                                    break;
+                                } else {
                                     execute_script(commands[1]);
                                 }
-                                ex = 0;
                                 break;
                             case "remove_first":
                                 remove_first();
@@ -521,6 +522,8 @@ public class CollectionManager {
                         }
                     } catch (ArrayIndexOutOfBoundsException e) {
                         System.out.println("У команды отсутствует аргумент");
+                    } catch (NoSuchElementException e) {
+                        System.out.println("Недостаточно аргументов у команды");
                     }
                 }
             }
@@ -533,8 +536,12 @@ public class CollectionManager {
      * Метод удаляет первый элемент коллекции
      */
     public void remove_first(){
-        collection.remove();
-        System.out.println("Первый элемент коллекции удален");
+        if (!(collection.size() == 0)) {
+            collection.remove();
+            System.out.println("Первый элемент коллекции удален");
+        } else {
+            System.out.println("Коллекция пуста");
+        }
     }
 
     /**
@@ -735,58 +742,76 @@ public class CollectionManager {
                 try{
                     for (Product p: productList) {
                         if (p.getId() == null) {
-                            throw new NullPointerException("Id не может быть null");
+                            System.out.println("Id не может быть null");
+                            return;
                         }
                         if (p.getId() <= 0) {
-                            throw new WrongArgument("Id не может быть меньше или равен 0");
+                            System.out.println("Id не может быть меньше или равен 0. Добавлена пустая коллекция");
+                            return;
                         }
                         if (p.getName() == null) {
-                            throw new NullPointerException("Имя не может быть null");
+                            System.out.println("Имя не может быть null");
+                            return;
                         }
                         if (p.getName().equals("")) {
-                            throw new WrongArgument("Строка имени не может быть пустой");
+                            System.out.println("Строка имени не может быть пустой. Добавлена пустая коллекция");
+                            return;
                         }
                         if (p.getCoordinates().getX() > 857) {
-                            throw new WrongArgument("Координата X не может быть больше 857");
+                            System.out.println("Координата X не может быть больше 857. Добавлена пустая коллекция");
+                            return;
                         }
                         if (p.getCoordinates().getY() == null) {
-                            throw new NullPointerException("Координата Y не может быть null");
+                            System.out.println("Координата Y не может быть null");
+                            return;
                         }
                         if (p.getPrice() == null) {
-                            throw new NullPointerException("Цена не может быть null");
+                            System.out.println("Цена не может быть null");
+                            return;
                         }
                         if (p.getPrice() <= 0) {
-                            throw new NullPointerException("Цена не может быть меньше или равна 0");
+                            System.out.println("Цена не может быть меньше или равна 0. Добавлена пустая коллекция");
+                            return;
                         }
                         if (p.getPartNumber() == null) {
-                            throw new NullPointerException("Номер партии не может быть null");
+                            System.out.println("Номер партии не может быть null");
+                            return;
                         }
                         if ((p.getPartNumber().length() > 85) || (p.getPartNumber().length() < 15) || (p.getPartNumber().equals(""))) {
-                            throw new WrongArgument("Строка с номером партии не может быть пустой и должна быть длиной от 15 до 85");
+                            System.out.println("Строка с номером партии не может быть пустой и должна быть длиной от 15 до 85. Добавлена пустая коллекция");
+                            return;
                         }
                         if (p.getManufactureCost() == null) {
-                            throw new NullPointerException("Цена производства не может быть null");
+                            System.out.println("Цена производства не может быть null");
+                            return;
                         }
                         if (p.getUnitOfMeasure() == null) {
-                            throw new NullPointerException("Единица измерения не может быть null");
+                            System.out.println("Единица измерения не может быть null");
+                            return;
                         }
                         if (p.getOwner().getName() == null) {
-                            throw new NullPointerException("Имя владельца не может быть null");
+                            System.out.println("Имя владельца не может быть null");
+                            return;
                         }
                         if (p.getOwner().getName().equals("")) {
-                            throw new WrongArgument("Строка имени владельца не может быть пустой");
+                            System.out.println("Строка имени владельца не может быть пустой. Добавлена пустая коллекция");
+                            return;
                         }
                         if (p.getOwner().getWeight() == null) {
-                            throw new NullPointerException("Вес владельца не может быть null");
+                            System.out.println("Вес владельца не может быть null");
+                            return;
                         }
                         if (p.getOwner().getWeight() <= 0) {
-                            throw new NullPointerException("Вес владельца не может быть меньше или равен 0");
+                            System.out.println("Вес владельца не может быть меньше или равен 0. Добавлена пустая коллекция");
+                            return;
                         }
                         if (p.getOwner().getEyeColor() == null) {
-                            throw new NullPointerException("Цвет глаз владельца не может быть null");
+                            System.out.println("Цвет глаз владельца не может быть null");
+                            return;
                         }
                         if (p.getOwner().getNationality() == null) {
-                            throw new NullPointerException("Национальность владельца не может быть null");
+                            System.out.println("Национальность владельца не может быть null");
+                            return;
                         }
                     }
                     PriorityQueue<Product> priorityQueue = json.fromJson(result.toString(), collectionQueue);
@@ -797,8 +822,6 @@ public class CollectionManager {
                     System.out.println("Коллекция успешно добавлена. Коллекция содержит " + (collection.size() - startSize) + " элемент(а/ов)");
                 } catch (NullPointerException e) {
                     System.out.println("Добавлена пустая коллекция");
-                } catch (WrongArgument e){
-                    System.out.println(e.getMessage());
                 }
             } catch (JsonSyntaxException e) {
                 System.out.println("Ошибка синтаксиса Json. Коллекция не добавлена");
